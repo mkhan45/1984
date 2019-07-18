@@ -2,7 +2,7 @@ import pickle
 from database import Profile
 
 path = input("What is the path of the folder?\n")
-database = read_from_mp3_folder(path)
+database = read_from_img_folder(path)
 
 filename = input("What should the file be called?\n")
 
