@@ -61,7 +61,7 @@ def pic_to_detect(*pics):
     
     return detections
 
-def detect_to_desc(detections)
+def detect_to_desc(detections):
     '''
     Takes in list of face detections then returns list of descriptors for each detection
     
