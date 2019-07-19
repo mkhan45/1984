@@ -56,6 +56,19 @@ def match(pic, database):
     return d_names[min_idxs]
 
 def pic_to_detect(*pics):
+    """
+    Takes in any number of pictures and returns a list of detection rectangles
+
+    Parameters
+    ----------
+    *pics: 1 or more [np.array]
+        One or more pictures.
+
+    Returns
+    -------
+    list
+        A list of detection rectangles.
+    """
 
     detections = []
     for pic in pics:
@@ -64,6 +77,22 @@ def pic_to_detect(*pics):
     return detections
 
 def detect_to_desc(detections)
+    '''
+    Takes in list of face detections then returns list of descriptors for each detection
+    
+    Parameters
+    ------------
+    detections: list
+        Face detect rectangles
+    
+        four edges of face rectangle
+    
+    Returns
+    ------------
+    descriptors: list of numpy arrays
+    
+        (128,) shape descriptor vectors
+    '''
 
     descriptors = []
     for i in detections:
