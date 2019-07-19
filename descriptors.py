@@ -46,6 +46,8 @@ def match(pic, database):
         min_dist_name = min(distances, key=distances.get())
         if min_dist_name <= threshold:
             names.append(min_dist_name)
+        
+    return names
 
         #check if the descriptor is in a profile in the database and return the name associated with that profile
 
