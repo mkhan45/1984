@@ -137,9 +137,9 @@ def add_to_database(name, database, *pics):
         descriptors.append(descriptor)
 
     if name in database: #idk what the database is called
+        print("mean descriptor: ")
+        print(database[name].mean_descriptor)
         database[name].descriptors.append(*descriptors)
     else:
-        print(type(database))
-        print(type(name))
-        print(type(Profile(name, descriptors)))
         database[name] = Profile(name, descriptors)
+        
