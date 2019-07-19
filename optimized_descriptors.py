@@ -1,4 +1,6 @@
 import numpy as np
+from database import Profile
+from sys import exit
 from dlib_models import download_model, download_predictor
 download_model()
 download_predictor()
@@ -35,12 +37,20 @@ def match(pic, database):
 
     threshold = 3 #some num: determine through experimentation
     detections = pic_to_detect(pic)
-    s_desc = np.array(detect_to_desc(detections))
-    d_desc = np.vstack(tuple(database.values().descriptors)) #database descriptors
+    s_desc = np.array(detect_to_desc(pic, detections))
+    if s_desc.size == 0:
+        print("No face detected.")
+        exit(0)
+    profiles = tuple(val for val in database.values())
+    print(tuple(profile.mean_descriptor for profile in profiles))
+    d_desc = np.vstack(tuple(profile.mean_descriptor for profile in profiles)) #database descriptors
+    print(d_desc)
     d_names = np.vstack(tuple(database.keys()))
 
     #compute Euclidean distances:
-    distances = np.sum(s_desc**2, axis=1)[:, np.newaxis] + np.sum(d_desc**2, axis=1) - 2*np.dot(s_desc, d_desc.T) 
+    s_squared = np.sum(s_desc**2, axis=1)
+    s_plus_d = s_squared[:, np.newaxis] + np.sum(d_desc**2, axis=1)
+    distances = s_plus_d - 2*np.dot(s_desc, d_desc.T) 
    
     min_idxs = np.argmin(distances, axis=1) #indices of minimum distance for each name
     min_dists = np.amin(distances, axis=1) #minimum distance for each name
@@ -63,8 +73,8 @@ def pic_to_detect(*pics):
         A list of detection rectangles.
     """
 
-    detections = []
-    for pic in pics:
+    detections = face_detect(pics[0])
+    for pic in pics[1:]:
         detections.append(face_detect(pic))
     
     return detections
@@ -88,7 +98,10 @@ def detect_to_desc(pic, detections):
     '''
 
     descriptors = []
+    print(detections)
     for detection in detections:
+        print("current detection: ")
+        print(detection)
         shape = shape_predictor(pic, detection)
         descriptor = np.array(face_rec_model.compute_face_descriptor(pic, shape))
         descriptors.append(descriptor)
@@ -116,10 +129,17 @@ def add_to_database(name, database, *pics):
         a new one will be created.
     """
     
-    detections = pic_to_detect(*pics)
-    descriptors = detect_to_desc(detections)
+    descriptors = []
+    for pic in pics:
+        detections = (face_detect(pic))
+        shape = shape_predictor(pic, detections[0])
+        descriptor = np.array(face_rec_model.compute_face_descriptor(pic, shape))
+        descriptors.append(descriptor)
 
     if name in database: #idk what the database is called
+        print("mean descriptor: ")
+        print(database[name].mean_descriptor)
         database[name].descriptors.append(*descriptors)
     else:
-        database[name].descriptors = descriptors
+        database[name] = Profile(name, descriptors)
+        
