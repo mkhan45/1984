@@ -83,7 +83,7 @@ def add_to_database(name, database, *pics):
         new_profile = Profile(name, detections)
         database[name] = new_profile
 
-        '''
+    '''
     Takes in list of face detections then returns list of descriptors for each detection
     
     Parameters
