@@ -1,4 +1,5 @@
 import numpy as np
+from database import Profile
 from sys import exit
 from dlib_models import download_model, download_predictor
 download_model()
@@ -40,8 +41,9 @@ def match(pic, database):
     if s_desc.size == 0:
         print("No face detected.")
         exit(0)
-    print(s_desc)
-    d_desc = np.vstack(tuple(val.mean_descriptor for val in database.values())) #database descriptors
+    profiles = tuple(val for val in database.values())
+    print(tuple(profile.mean_descriptor for profile in profiles))
+    d_desc = np.vstack(tuple(profile.mean_descriptor for profile in profiles)) #database descriptors
     print(d_desc)
     d_names = np.vstack(tuple(database.keys()))
 
@@ -129,12 +131,15 @@ def add_to_database(name, database, *pics):
     
     descriptors = []
     for pic in pics:
-        detection = (face_detect(pic))
-        shape = shape_predictor(pic, detection)
+        detections = (face_detect(pic))
+        shape = shape_predictor(pic, detections[0])
         descriptor = np.array(face_rec_model.compute_face_descriptor(pic, shape))
         descriptors.append(descriptor)
 
     if name in database: #idk what the database is called
         database[name].descriptors.append(*descriptors)
     else:
-        database[name].descriptors = descriptors
+        print(type(database))
+        print(type(name))
+        print(type(Profile(name, descriptors)))
+        database[name] = Profile(name, descriptors)
