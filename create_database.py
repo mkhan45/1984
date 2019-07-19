@@ -4,7 +4,7 @@ from database import Profile
 from camera import take_picture
 import matplotlib.pyplot as plt
 
-from descriptors import add_to_database
+from optimized_descriptors import add_to_database
 
 database_name = input("Filename of already existing database? (n for new database)") 
 
