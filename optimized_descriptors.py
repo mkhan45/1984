@@ -69,7 +69,7 @@ def pic_to_detect(*pics):
     
     return detections
 
-def detect_to_desc(pic, detections)
+def detect_to_desc(pic, detections):
     '''
     Takes in list of face detections then returns list of descriptors for each detection
     
@@ -108,7 +108,7 @@ def add_to_database(name, database, *pics):
     *pics: 1 or more [np.array]
         One or more pictures whose descriptors will be added to the profile specified by the name.
     database: Dictionary{String name : Profile profile}
-    
+
     Returns
     -------
     None.
