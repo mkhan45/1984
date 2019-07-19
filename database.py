@@ -20,4 +20,4 @@ class Profile:
 
     def write_database_file(database, filename):
         with open(filename, 'wb') as f:
-            pickle.dump(database, f, pickle.HIGHEST_PROTOCOL
+            pickle.dump(database, f, pickle.HIGHEST_PROTOCOL)

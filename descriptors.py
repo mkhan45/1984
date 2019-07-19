@@ -24,6 +24,8 @@ def match(pic, database):
     pic: [np.array()]
         An image, converted into a np.array(). The camera module does this automatically.
 
+    database: Dictionary{String name : Profile profile}
+
     Returns
     -------
     List
@@ -59,7 +61,7 @@ def add_to_database(name, database, *pics):
         An input string containing the name of the person to be added.
     *pics: 1 or more [np.array]
         One or more pictures whose descriptors will be added to the profile specified by the name.
-     
+    database: Dictionary{String name : Profile profile}
     Returns
     -------
     None.
