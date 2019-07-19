@@ -34,15 +34,8 @@ def match(pic, database):
     """
 
     threshold = 3 #some num: determine through experimentation
-    detections = list(face_detect(pic))
-    s_desc = list() #sample descriptors
-
-    for i in detections:
-        shape = shape_predictor(pic, detections[i])
-        descriptor = np.array(face_rec_model.compute_face_descriptor(pic, shape))
-        s_desc.append(descriptor)
-
-    s_desc = np.array(s_desc)
+    detections = pic_to_detect(pic)
+    s_desc = np.array(detect_to_desc(detections))
     d_desc = np.vstack(tuple(database.values().descriptors)) #database descriptors
     d_names = np.vstack(tuple(database.keys()))
 
@@ -115,6 +108,7 @@ def add_to_database(name, database, *pics):
     *pics: 1 or more [np.array]
         One or more pictures whose descriptors will be added to the profile specified by the name.
     database: Dictionary{String name : Profile profile}
+    
     Returns
     -------
     None.
@@ -122,11 +116,10 @@ def add_to_database(name, database, *pics):
         a new one will be created.
     """
     
-    detections = []
-    for pic in pics:
-        detections.append(face_detect(pic))
+    detections = pic_to_detect(*pics)
+    descriptors = detect_to_desc(detections)
 
     if name in database: #idk what the database is called
-        database[name].descriptors.append(*detections)
+        database[name].descriptors.append(*descriptors)
     else:
-        database[name].descriptors = detections
+        database[name].descriptors = descriptors
