@@ -26,6 +26,6 @@ add_to_database(face_name, database, img_array)
 
 filename = input("What should the file be called?\n")
 
- with open(filename, 'wb') as f:
-     # Pickle the 'data' dictionary using the highest protocol available.
-     pickle.dump(database, f, pickle.HIGHEST_PROTOCOL)
+with open(filename, 'wb') as f:
+    # Pickle the 'data' dictionary using the highest protocol available.
+    pickle.dump(database, f, pickle.HIGHEST_PROTOCOL)
