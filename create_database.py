@@ -11,18 +11,19 @@ database_name = input("Filename of already existing database? (n for new databas
 if database_name == 'n':
     database = {}
 else:
-    with open(filename, 'rb') as file:
+    with open(database_name, 'rb') as file:
         database = pickle.load(file)
 
 img_array = take_picture()
 
-fig,ax = plt.subplots()
-ax.imshow(img_array)
+# fig,ax = plt.subplots()
+# ax.imshow(img_array)
 
 face_name = input("What name?\n")
 
-
 add_to_database(face_name, database, img_array)
+
+print(database)
 
 filename = input("What should the file be called?\n")
 
