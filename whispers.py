@@ -12,8 +12,8 @@ from collections import Counter
 from dlib_models import models
 from pathlib import Path
 
-IMG_EXT = [".jpg", ".jpeg", ".png"]
-CUTOFF = 6  # The maximum Euclidean distance between descriptors to be neighbors
+IMG_EXT = [".jpg", ".jpeg", ".jfif", ".png"]
+CUTOFF = 0.5  # The maximum Euclidean distance between descriptors to be neighbors
 UPSCALE = 1  # The number of times to upscale the image before face detection.
 
 
@@ -57,9 +57,24 @@ for i in range(len(descriptors)):
 
 
 rand_idxs = np.arange(len(graph))
-print(rand_idxs)
+np.random.shuffle(rand_idxs)
 for node_idx in rand_idxs:
     node = graph[node_idx]
     labels = Counter([graph[neighbor].label for neighbor in node.neighbors])
     most_common = max(labels.values())
     node.label = random.choice([label for label, freq in labels.items() if freq == most_common])
+
+
+for i in range(len(graph)):
+    print(image_paths[i], ":", graph[i].label)
+
+
+# ATTEMPT TO MOVE FILES
+# for i in range(len(graph)):
+#     node = graph[i]
+#     path_to_label = folder / str(node.label)
+#     if not path_to_label.is_dir():
+#         path_to_label.mkdir()
+#     shutil.move(str(folder / image_paths[i]), str(path_to_label / image_paths[i]))
+#
+# print("Done!")
