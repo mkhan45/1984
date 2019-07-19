@@ -55,26 +55,6 @@ def match(pic, database):
     
     return d_names[min_idxs]
 
-    #OLD CODE: (distances were computed using for-loops)
-    '''
-    detections = list(face_detect(pic)) 
-
-    threshold = 3 #some num: determine through experimentation
-    names = []
-    for i in detections:
-        shape = shape_predictor(pic, detections[i])
-        descriptor = np.array(face_rec_model.compute_face_descriptor(pic, shape))
-        distances = {}
-        for k, v in database.items():
-            arr = np.array(v.descriptors)
-            distances[k] = np.sum(np.sqrt((arr - descriptor)**2))
-        min_dist_name = min(distances, key=distances.get())
-        if min_dist_name <= threshold:
-            names.append(min_dist_name)
-        
-    return names 
-    '''
-
 def add_to_database(name, database, *pics):
     """
     Adds a profile to the database with a name and descriptors for any pictures added alongside.
