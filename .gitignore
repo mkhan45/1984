@@ -9,6 +9,9 @@ __pycache__/
 #Jupyter Notebook 
 *.ipynb
 
+#DS store
+.DS_Store/
+
 # Distribution / packaging
 .Python
 build/

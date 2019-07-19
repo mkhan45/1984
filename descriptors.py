@@ -5,6 +5,8 @@ download_predictor()
 
 from dlib_models import load_dlib_models
 
+from database import Profile
+
 # this loads the dlib models into memory. You should only import the models *after* loading them.
 # This does lazy-loading: it doesn't do anything if the models are already loaded.
 load_dlib_models()
@@ -76,4 +78,5 @@ def add_to_database(name, database, *pics):
     if name in database: #idk what the database is called
         database[name].descriptors.append(*detections)
     else:
-        database[name].descriptors = detections
+        new_profile = Profile(name, detections)
+        database[name] = new_profile
