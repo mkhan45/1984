@@ -55,6 +55,25 @@ def match(pic, database):
     
     return d_names[min_idxs]
 
+def pic_to_detect(*pics):
+
+    detections = []
+    for pic in pics:
+        detections.append(face_detect(pic))
+    
+    return detections
+
+def detect_to_desc(detections)
+
+    descriptors = []
+    for i in detections:
+        shape = shape_predictor(pic, detections[i])
+        descriptor = np.array(face_rec_model.compute_face_descriptor(pic, shape))
+        descriptors.append(descriptor)
+
+    return descriptors
+
+
 def add_to_database(name, database, *pics):
     """
     Adds a profile to the database with a name and descriptors for any pictures added alongside.
