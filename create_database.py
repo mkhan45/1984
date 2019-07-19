@@ -1,46 +1,31 @@
 import pickle
 from database import Profile
 
-path = input("What is the path of the folder?\n")
-database = read_from_img_folder(path)
+from camera import take_picture
+import matplotlib.pyplot as plt
+
+from descriptors import add_to_database
+
+database_name = input("Filename of already existing database? (n for new database)") 
+
+if database_name == 'n':
+    database = {}
+else:
+    with open(filename, 'rb') as file:
+        database = pickle.load(file)
+
+img_array = take_picture()
+
+fig,ax = plt.subplots()
+ax.imshow(img_array)
+
+face_name = input("What name?\n")
+
+
+add_to_database(face_name, database, img_array)
 
 filename = input("What should the file be called?\n")
 
-def read_from_img_folder(path):
-    """
-    Reads folder of images into database
-
-    Parameters
-    ----------
-    path : String
-        global path to folder
-
-    Returns
-    -------
-    Database
-        database of songs
-
-    Dependencies
-    ------------
-    Song to fingerprint
-    append_database
-    """
-
-    database = []
-
-    folder = Path(path)
-    for file in folder.iterdir():
-        if not file.is_dir() and file.suffix == ".jpg": #this might want more extensions idk
-            print(file.stem)
-            name = file.stem
-            #make Profile and append to database
-            database.append(Profile(name, descriptors))
-
-    return database
-
-filename = input("folder path?:\n")
-database = read_from_img_folder(filename)
-
-with open(filename, 'wb') as f:
-    # Pickle the 'data' dictionary using the highest protocol available.
-    pickle.dump(database, f, pickle.HIGHEST_PROTOCOL)
+ with open(filename, 'wb') as f:
+     # Pickle the 'data' dictionary using the highest protocol available.
+     pickle.dump(database, f, pickle.HIGHEST_PROTOCOL)

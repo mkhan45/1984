@@ -15,7 +15,7 @@ face_detect = models["face detect"]
 face_rec_model = models["face rec"]
 shape_predictor = models["shape predict"]
 
-def match(pic): 
+def match(pic, database): 
     """
     Takes a picture and tries to find a match.
 
@@ -23,6 +23,8 @@ def match(pic):
     ----------
     pic: [np.array()]
         An image, converted into a np.array(). The camera module does this automatically.
+
+    database: Dictionary{String name : Profile profile}
 
     Returns
     -------
@@ -38,7 +40,7 @@ def match(pic):
         #check if the descriptor is in a profile in the database and return the name associated with that profile
 
 
-def add_to_database(name, *pics):
+def add_to_database(name, database, *pics):
     """
     Adds a profile to the database with a name and descriptors for any pictures added alongside.
     If a profile already exists with the same name, adds the pictures to that profile.
@@ -49,7 +51,7 @@ def add_to_database(name, *pics):
         An input string containing the name of the person to be added.
     *pics: 1 or more [np.array]
         One or more pictures whose descriptors will be added to the profile specified by the name.
-     
+    database: Dictionary{String name : Profile profile}
     Returns
     -------
     None.
