@@ -85,7 +85,7 @@ def plot_graph(graph, adj):
     pos = nx.spring_layout(g)
 
     # make a mapping that maps: node-lab -> color, for each unique label in the graph
-    color = list(iter(cm.Vega20b(np.linspace(0, 1, len(set(i.label for i in graph))))))
+    color = list(iter(cm.tab20b(np.linspace(0, 1, len(set(i.label for i in graph))))))
     color_map = dict(zip(sorted(set(i.label for i in graph)), color))
     colors = [color_map[i.label] for i in graph]  # the color for each node in the graph, according to the node's label
 
@@ -94,3 +94,25 @@ def plot_graph(graph, adj):
     nx.draw_networkx_nodes(g, pos=pos, ax=ax, nodelist=range(len(graph)), node_color=colors)
     nx.draw_networkx_edges(g, pos, ax=ax, edgelist=g.edges())
     return fig, ax
+
+
+def gen_adj(graph):
+    """ Generates the adjacency matrix based on a graph of nodes.
+
+    Parameters
+    ----------
+    graph : List[Node, ...]
+        The list of `Node` objects to generate the matrix from.
+
+    Returns
+    -------
+    adj : np.ndrray
+        The adjacency matrix.
+    """
+    import numpy as np
+
+    adj = np.zeros((len(graph), len(graph)))
+    for i in range(len(graph)):
+        node = graph[i]
+        adj[i, list(node.neighbors)] = 1
+    return adj
