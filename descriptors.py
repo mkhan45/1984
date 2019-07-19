@@ -53,6 +53,38 @@ def match(pic, database):
 
         #check if the descriptor is in a profile in the database and return the name associated with that profile
 
+def pic_to_detect(*pics):
+
+    detections = []
+    for pic in pics:
+        detections.append(face_detect(pic))
+    
+    return detections
+
+def detect_to_desc(detections)
+    '''
+    Takes in list of face detections then returns list of descriptors for each detection
+    
+    Parameters
+    ------------
+    detections: list(face detect rectangles)
+    
+    four edges of face rectangle
+    
+    Returns
+    ------------
+    descriptors: list(numpy arrays)
+    
+    (128,) shape descriptor vectors
+    
+    '''
+    descriptors = []
+    for i in detections:
+        shape = shape_predictor(pic, detections[i])
+        descriptor = np.array(face_rec_model.compute_face_descriptor(pic, shape))
+        descriptors.append(descriptor)
+
+    return descriptors
 
 def add_to_database(name, database, *pics):
     """
@@ -83,19 +115,3 @@ def add_to_database(name, database, *pics):
         new_profile = Profile(name, detections)
         database[name] = new_profile
 
-        '''
-    Takes in list of face detections then returns list of descriptors for each detection
-    
-    Parameters
-    ------------
-    detections: list(face detect rectangles)
-    
-    four edges of face rectangle
-    
-    Returns
-    ------------
-    descriptors: list(numpy arrays)
-    
-    (128,) shape descriptor vectors
-    
-    '''

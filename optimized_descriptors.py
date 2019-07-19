@@ -76,7 +76,7 @@ def pic_to_detect(*pics):
     
     return detections
 
-def detect_to_desc(detections)
+def detect_to_desc(pic, detections)
     '''
     Takes in list of face detections then returns list of descriptors for each detection
     
@@ -95,8 +95,8 @@ def detect_to_desc(detections)
     '''
 
     descriptors = []
-    for i in detections:
-        shape = shape_predictor(pic, detections[i])
+    for detection in detections:
+        shape = shape_predictor(pic, detection)
         descriptor = np.array(face_rec_model.compute_face_descriptor(pic, shape))
         descriptors.append(descriptor)
 
