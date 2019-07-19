@@ -82,3 +82,20 @@ def add_to_database(name, database, *pics):
     else:
         new_profile = Profile(name, detections)
         database[name] = new_profile
+
+        '''
+    Takes in list of face detections then returns list of descriptors for each detection
+    
+    Parameters
+    ------------
+    detections: list(face detect rectangles)
+    
+    four edges of face rectangle
+    
+    Returns
+    ------------
+    descriptors: list(numpy arrays)
+    
+    (128,) shape descriptor vectors
+    
+    '''
