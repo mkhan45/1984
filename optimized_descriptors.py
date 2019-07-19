@@ -17,14 +17,14 @@ face_detect = models["face detect"]
 face_rec_model = models["face rec"]
 shape_predictor = models["shape predict"]
 
-def match(pic, database): 
+def match(descriptor, database, threshold): 
     """
-    Takes a picture and tries to find a match.
+    Takes a descriptor and tries to find a match to a person.
 
     Parameters
     ----------
-    pic: [np.array()]
-        An image, converted into a np.array(). The camera module does this automatically.
+    descriptor: [np.array()]
+        A descriptor for an image.
 
     database: Dictionary 
         {String name : Profile profile}
@@ -35,21 +35,22 @@ def match(pic, database):
         A list containing the names of people in the picture, or "no matches" if there were no matches.
     """
 
-    threshold = 1 #some num: determine through experimentation
-    detections = pic_to_detect(pic)
-    s_desc = np.array(detect_to_desc(pic, detections))
-    if s_desc.size == 0:
-        print("No face detected.")
-        exit(0)
+    threshold = threshold #some num: determine through experimentation
+    #detections = pic_to_detect(pic)
+    #s_desc = np.array(detect_to_desc(pic, detections))
+    s_desc = np.array([descriptor])
+    #print(s_desc)
     profiles = tuple(val for val in database.values())
-    d_desc = np.vstack(tuple(profile.mean_descriptor for profile in profiles)) #database descriptors
-    d_names = np.vstack(tuple(database.keys()))
+    mean_descs = tuple(profile.mean_descriptor for profile in profiles)
+    if s_desc.size == 0 or len(mean_descs) == 0:
+        return 'No Match Found'
+    d_desc = np.vstack(mean_descs) #database descriptors
+    d_names = np.array([key for key in database.keys()])
 
     #compute Euclidean distances:
     s_squared = np.sum(s_desc**2, axis=1)
     s_plus_d = s_squared[:, np.newaxis] + np.sum(d_desc**2, axis=1)
     distances = s_plus_d - 2*np.dot(s_desc, d_desc.T)
-    print(distances)
    
     min_idxs = np.argmin(distances, axis=1) #indices of minimum distance for each name
     min_dists = np.amin(distances, axis=1) #minimum distance for each name
@@ -57,7 +58,7 @@ def match(pic, database):
     
     names = d_names[min_idxs]
     if names.size == 0:
-        return 'Face not recognized'
+        return 'No Match Found'
     else:
         return names
 
@@ -139,9 +140,8 @@ def add_to_database(name, database, *pics):
     if name in database: #idk what the database is called
         for descriptor in descriptors:
             database[name].descriptors.append(descriptor)
-        print("descriptors")
-        print(database[name].descriptors)
-        print(database[name].mean_descriptor)
+        #print("descriptors")
+        #print(database[name].descriptors)
+        #print(database[name].mean_descriptor)
     else:
         database[name] = Profile(name, descriptors)
-        

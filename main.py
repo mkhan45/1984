@@ -57,6 +57,6 @@ def add_camera_pic(database = database1):
             ax.text(rect.left(), (rect.top()+rect.bottom())/2, match_name, color='r', fontsize = 16)
             print(len(descriptors[i]))
             print(descriptors[i])
-            database[match_name].add_descriptor(descriptors[i])
+            database[match_name[0]].add_descriptor(descriptors[i])
 
 add_camera_pic()
