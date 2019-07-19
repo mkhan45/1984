@@ -35,28 +35,31 @@ def match(pic, database):
         A list containing the names of people in the picture, or "no matches" if there were no matches.
     """
 
-    threshold = 3 #some num: determine through experimentation
+    threshold = 1 #some num: determine through experimentation
     detections = pic_to_detect(pic)
     s_desc = np.array(detect_to_desc(pic, detections))
     if s_desc.size == 0:
         print("No face detected.")
         exit(0)
     profiles = tuple(val for val in database.values())
-    print(tuple(profile.mean_descriptor for profile in profiles))
     d_desc = np.vstack(tuple(profile.mean_descriptor for profile in profiles)) #database descriptors
-    print(d_desc)
     d_names = np.vstack(tuple(database.keys()))
 
     #compute Euclidean distances:
     s_squared = np.sum(s_desc**2, axis=1)
     s_plus_d = s_squared[:, np.newaxis] + np.sum(d_desc**2, axis=1)
-    distances = s_plus_d - 2*np.dot(s_desc, d_desc.T) 
+    distances = s_plus_d - 2*np.dot(s_desc, d_desc.T)
+    print(distances)
    
     min_idxs = np.argmin(distances, axis=1) #indices of minimum distance for each name
     min_dists = np.amin(distances, axis=1) #minimum distance for each name
-    min_idxs = min_idxs[min_dists > threshold] #cutoff distances that are larger than threshold
+    min_idxs = min_idxs[min_dists < threshold] #cutoff distances that are larger than threshold
     
-    return d_names[min_idxs]
+    names = d_names[min_idxs]
+    if names.size == 0:
+        return 'Face not recognized'
+    else:
+        return names
 
 def pic_to_detect(*pics):
     """
@@ -98,10 +101,7 @@ def detect_to_desc(pic, detections):
     '''
 
     descriptors = []
-    print(detections)
     for detection in detections:
-        print("current detection: ")
-        print(detection)
         shape = shape_predictor(pic, detection)
         descriptor = np.array(face_rec_model.compute_face_descriptor(pic, shape))
         descriptors.append(descriptor)
@@ -137,9 +137,11 @@ def add_to_database(name, database, *pics):
         descriptors.append(descriptor)
 
     if name in database: #idk what the database is called
-        print("mean descriptor: ")
+        for descriptor in descriptors:
+            database[name].descriptors.append(descriptor)
+        print("descriptors")
+        print(database[name].descriptors)
         print(database[name].mean_descriptor)
-        database[name].descriptors.append(*descriptors)
     else:
         database[name] = Profile(name, descriptors)
         
