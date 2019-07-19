@@ -5,7 +5,7 @@ class Profile:
     def __init__(self, name, descriptors):
         self.name = name
         self.descriptors = descriptors
-        self.mean_descriptor = np.mean(descriptors, axis = 0)
+        self.mean_descriptor = np.mean(self.descriptors, axis = 0)
 
     def add_descriptor(descriptor):
         self.descriptors.append(descriptor)

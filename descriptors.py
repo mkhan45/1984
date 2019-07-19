@@ -17,6 +17,26 @@ face_detect = models["face detect"]
 face_rec_model = models["face rec"]
 shape_predictor = models["shape predict"]
 
+def pairwise_dists(x, y):
+    """ Computing pairwise distances using memory-efficient
+        vectorization.
+
+        Parameters
+        ----------
+        x : numpy.ndarray, shape=(M, D)
+        y : numpy.ndarray, shape=(N, D)
+
+        Returns
+        -------
+        numpy.ndarray, shape=(M, N)
+            The Euclidean distance between each pair of
+            rows between `x` and `y`."""
+    dot = x @ y.T
+    dists = -2 * dot
+    dists +=  np.sum(x**2)
+    dists += np.sum(y**2)
+    return  np.sqrt(dists)
+
 def match(descriptor, database, threshold): 
     """
     Takes a picture and tries to find a match.
@@ -40,9 +60,9 @@ def match(descriptor, database, threshold):
     min_name = 'No Match Found'
     min_distance = threshold+.001
     for i, v in enumerate(database.values()):
-        norm1 = np.linalg.norm(v.mean_descriptor)
-        norm2 = np.linalg.norm(descriptor)
-        v_distance = np.sqrt(np.sum((norm2 - norm1)**2))
+        norm1 = v.mean_descriptor/np.linalg.norm(v.mean_descriptor)
+        norm2 = descriptor/np.linalg.norm(descriptor)
+        v_distance = pairwise_dists(norm1, norm2)
         print(v_distance)
         if v_distance < min_distance:
             min_distance = v_distance
