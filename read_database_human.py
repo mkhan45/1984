@@ -1,5 +1,5 @@
 import pickle
-from database import Profile
+from profile import Profile
 
 from camera import take_picture #removing this makes it die for dumb reasons
 

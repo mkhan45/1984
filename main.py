@@ -12,13 +12,11 @@ face_detect = models["face detect"]
 face_rec_model = models["face rec"]
 shape_predictor = models["shape predict"]
 import optimized_descriptors as od
-from database import Profile
+from profile import Profile
 from descriptors import match
+from pathlib import Path
 
-database1 = dict()
-
-from descriptors import match
-def add_camera_pic(database = database1):
+def master_cam(databasepath = ''):
     '''
     Adds descriptors for faces in photo taken by camera to the requested database after asking for name
     
@@ -30,7 +28,8 @@ def add_camera_pic(database = database1):
     ------------
     
     '''
-    
+    pickle_in = open(databasepath, "rb")
+    database = pickle.load(pickle_in)
     
     
     fig,ax = plt.subplots()
@@ -58,5 +57,5 @@ def add_camera_pic(database = database1):
             print(len(descriptors[i]))
             print(descriptors[i])
             database[match_name].add_descriptor(descriptors[i])
-
-add_camera_pic()
+    with open(databasepath, 'wb') as handle:
+        pickle.dump(database, handle, protocol=pickle.HIGHEST_PROTOCOL)

@@ -5,7 +5,7 @@ download_predictor()
 
 from dlib_models import load_dlib_models
 
-from database import Profile
+from profile import Profile
 
 # this loads the dlib models into memory. You should only import the models *after* loading them.
 # This does lazy-loading: it doesn't do anything if the models are already loaded.
