@@ -15,7 +15,7 @@ face_detect = models["face detect"]
 face_rec_model = models["face rec"]
 shape_predictor = models["shape predict"]
 
-def match(pic): 
+def match(pic, database): 
     """
     Takes a picture and tries to find a match.
 
@@ -26,19 +26,29 @@ def match(pic):
 
     Returns
     -------
-    String
-        A string containing the name of the match, or "no match" if there was no match.
+    List
+        A list containing the names of people in the picture, or "no matches" if there were no matches.
     """
 
     detections = list(face_detect(pic)) 
 
+    threshold = 3 #some num
+    names = []
     for i in detections:
         shape = shape_predictor(pic, detections[i])
         descriptor = np.array(face_rec_model.compute_face_descriptor(pic, shape))
+        distances = {}
+        for k, v in database.items():
+            arr = np.array(v.descriptors)
+            distances[k] = np.sum(np.sqrt((arr - descriptor)**2))
+        min_dist_name = min(distances, key=distances.get())
+        if min_dist_name <= threshold:
+            names.append(min_dist_name)
+
         #check if the descriptor is in a profile in the database and return the name associated with that profile
 
 
-def add_to_database(name, *pics):
+def add_to_database(name, database, *pics):
     """
     Adds a profile to the database with a name and descriptors for any pictures added alongside.
     If a profile already exists with the same name, adds the pictures to that profile.
@@ -62,6 +72,6 @@ def add_to_database(name, *pics):
         detections.append(face_detect(pic))
 
     if name in database: #idk what the database is called
-        database[name].append(*detections)
+        database[name].descriptors.append(*detections)
     else:
-        database[name] = detections
+        database[name].descriptors = detections
