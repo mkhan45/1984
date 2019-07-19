@@ -17,14 +17,14 @@ face_detect = models["face detect"]
 face_rec_model = models["face rec"]
 shape_predictor = models["shape predict"]
 
-def match(pic, database): 
+def match(descriptor, database, threshold): 
     """
     Takes a picture and tries to find a match.
 
     Parameters
     ----------
-    pic: [np.array()]
-        An image, converted into a np.array(). The camera module does this automatically.
+    descriptor: [np.array()]
+        A (128,) vector descibing each face
 
     database: Dictionary{String name : Profile profile}
 
@@ -33,23 +33,21 @@ def match(pic, database):
     List
         A list containing the names of people in the picture, or "no matches" if there were no matches.
     """
+    
+    print("this function is updated")
 
-    detections = list(face_detect(pic)) 
-
-    threshold = 3 #some num
-    names = []
-    for i in detections:
-        shape = shape_predictor(pic, detections[i])
-        descriptor = np.array(face_rec_model.compute_face_descriptor(pic, shape))
-        distances = {}
-        for k, v in database.items():
-            arr = np.array(v.descriptors)
-            distances[k] = np.sum(np.sqrt((arr - descriptor)**2))
-        min_dist_name = min(distances, key=distances.get())
-        if min_dist_name <= threshold:
-            names.append(min_dist_name)
-        
-    return names
+    #threshold = 1.5 #some num
+    min_name = 'No Match Found'
+    min_distance = threshold+.001
+    for i, v in enumerate(database.values()):
+        norm1 = np.linalg.norm(v.mean_descriptor)
+        norm2 = np.linalg.norm(descriptor)
+        v_distance = np.sqrt(np.sum((norm2 - norm1)**2))
+        print(v_distance)
+        if v_distance < min_distance:
+            min_distance = v_distance
+            min_name = v.name
+    return min_name
 
         #check if the descriptor is in a profile in the database and return the name associated with that profile
 
