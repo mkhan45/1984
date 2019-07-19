@@ -62,7 +62,7 @@ def match(descriptor, database, threshold):
     for i, v in enumerate(database.values()):
         norm1 = v.mean_descriptor/np.linalg.norm(v.mean_descriptor)
         norm2 = descriptor/np.linalg.norm(descriptor)
-        v_distance = pairwise_dists(norm1, norm2)
+        v_distance = np.sqrt(np.sum((norm1-norm2)**2))
         print(v_distance)
         if v_distance < min_distance:
             min_distance = v_distance
