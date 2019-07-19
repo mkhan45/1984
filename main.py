@@ -54,8 +54,6 @@ def master_cam(databasepath = ''):
             rectangle = patches.Rectangle((rect.left(),rect.bottom()),rect.right()-rect.left(),rect.top()-rect.bottom(),linewidth=1,edgecolor='r',facecolor='none')
             ax.add_patch(rectangle)
             ax.text(rect.left(), (rect.top()+rect.bottom())/2, match_name, color='r', fontsize = 16)
-            print(len(descriptors[i]))
-            print(descriptors[i])
             database[match_name].add_descriptor(descriptors[i])
     with open(databasepath, 'wb') as handle:
         pickle.dump(database, handle, protocol=pickle.HIGHEST_PROTOCOL)
