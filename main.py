@@ -1,24 +1,24 @@
 import matplotlib.pyplot as plt
+import pickle
 from camera import take_picture
 import numpy as np
 from dlib_models import download_model, download_predictor, load_dlib_models
-download_model()
-download_predictor()
 from dlib_models import models
 import matplotlib.patches as patches
 from matplotlib.patches import Rectangle
+import optimized_descriptors as od
+from our_profile import Profile
+from descriptors import match
+from pathlib import Path
+
+download_model()
+download_predictor()
 load_dlib_models()
 face_detect = models["face detect"]
 face_rec_model = models["face rec"]
 shape_predictor = models["shape predict"]
-import optimized_descriptors as od
-from database import Profile
-from descriptors import match
 
-database1 = dict()
-
-from descriptors import match
-def add_camera_pic(database = database1):
+def master_cam(databasepath = ''):
     '''
     Adds descriptors for faces in photo taken by camera to the requested database after asking for name
     
@@ -30,7 +30,8 @@ def add_camera_pic(database = database1):
     ------------
     
     '''
-    
+    pickle_in = open(databasepath, "rb")
+    database = pickle.load(pickle_in)
     
     
     fig,ax = plt.subplots()
@@ -55,8 +56,6 @@ def add_camera_pic(database = database1):
             rectangle = patches.Rectangle((rect.left(),rect.bottom()),rect.right()-rect.left(),rect.top()-rect.bottom(),linewidth=1,edgecolor='r',facecolor='none')
             ax.add_patch(rectangle)
             ax.text(rect.left(), (rect.top()+rect.bottom())/2, match_name, color='r', fontsize = 16)
-            print(len(descriptors[i]))
-            print(descriptors[i])
-            database[match_name[0]].add_descriptor(descriptors[i])
-
-add_camera_pic()
+            database[match_name].add_descriptor(descriptors[i])
+    with open(databasepath, 'wb') as handle:
+        pickle.dump(database, handle, protocol=pickle.HIGHEST_PROTOCOL)

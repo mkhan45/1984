@@ -1,5 +1,5 @@
 import numpy as np
-from database import Profile
+from our_profile import Profile
 from sys import exit
 from dlib_models import download_model, download_predictor
 download_model()
